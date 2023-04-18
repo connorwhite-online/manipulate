@@ -1,45 +1,46 @@
+import React, { useRef } from 'react';
+import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
+import * as tf from '@tensorflow/tfjs-core';
+// Register WebGL backend.
+import '@tensorflow/tfjs-backend-webgl';
+import { Canvas } from '@react-three/fiber';
+import Webcam from 'react-webcam';
 import './App.css';
-import React, { useEffect, useRef } from "react";
-// import * as tf from "@tensorflow/tfjs";
-import * as handpose from "@tensorflow-models/handpose";
-import Webcam from "react-webcam";
-import { Canvas } from "@react-three/fiber";
 
-export default function App() {
-  const boxRef = useRef();
-  const webcamRef = useRef(null);
+function App() {
 
-  useEffect(() => {
-    async function setupHandpose() {
-      const model = await handpose.load();
-      const video = webcamRef.current.video;
+  const modelRef = useRef();
+  const cameraRef = useRef();
 
-      const detectHands = async () => {
-        const predictions = await model.estimateHands(video);
-        if (predictions.length > 0) {
-          // Get the coordinates of the first hand landmark
-          const [x, y, z] = predictions[0].landmarks[0];
-          // Use the coordinates to update the 3D model position
-          boxRef.current.position.set(x, y, z);
-        }
-      };
+  const model = handPoseDetection.SupportedModels.MediaPipeHands;
+  const detectorConfig = {
+    runtime: 'tfjs',
+    maxHands: 1,
+    modelType: 'lite',
+  };
+  detector = await handPoseDetection.createDetector(model, detectorConfig);
 
-      setInterval(detectHands, 100);
-    }
-    setupHandpose();
-  }, []);
+  const estimationConfig = {flipHorizontal: true};
+  const hands = await detector.estimateHands(Webcam, estimationConfig);
 
   return (
-    <div className="container">
-      <Webcam ref={webcamRef} width={900} height={500}/>
-      <div className="box" >
-      <Canvas>
+    <div className='container'>
+      <div className='webcam'>
+        <Webcam
+        ref={cameraRef}
+        width={300} />
+      </div>
+      <div className='webgl'>
+        <Canvas >
         <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <boxGeometry ref={boxRef}/>
-        <meshBasicMaterial color="hotpink" />
-      </Canvas>
+          <mesh ref={modelRef} rotation={[0, -Math.PI / 1.5, Math.PI / 1.25]}>
+            <boxBufferGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial color="hotpink" />
+          </mesh>
+        </Canvas>
       </div>
     </div>
   );
 }
+
+export default App;
