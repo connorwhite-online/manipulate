@@ -17,6 +17,7 @@ function App() {
   const model = handPoseDetection.SupportedModels.MediaPipeHands;
   const detectorConfig = {
     runtime: 'tfjs',
+    solutionPath: 'base/node_modules/@mediapipe/hands',
     maxHands: 1,
     modelType: 'lite',
   };
@@ -53,7 +54,7 @@ function App() {
       // Make Detections
       const estimationConfig = {flipHorizontal: true};
       const hands = await detector.estimateHands(video, estimationConfig);
-      console.log(hands);
+      console.log(hands[0].keypoints);
 
       // Draw Hand Mesh
       const ctx = canvasRef.current.getContext('2d');
@@ -71,16 +72,17 @@ function App() {
         <Webcam
           ref={cameraRef}
           width={100} 
+          style={{zIndex: 1, position: 'absolute'}}
         />
-        <canvas ref={canvasRef} width={300} style={{position: 'absolute'}} />
+        <canvas ref={canvasRef} width={300} style={{position: 'absolute', zIndex: 3}} />
       </div>
       <div className='webgl'>
-        <Canvas >
+        <Canvas style={{zIndex: 10}}>
         <ambientLight />
         <pointLight position={[3, 6, 1]} intensity={2}/>
         <pointLight position={[-5, -5, 1]} intensity={1}/>
           <mesh ref={modelRef} rotation={[0, -Math.PI / 1.5, Math.PI / 1.25]}>
-            <boxBufferGeometry args={[1, 1, 1]} />
+            <boxBufferGeometry args={[2, 2, 2]} />
             <meshStandardMaterial color="lightblue" metalness={1} />
           </mesh>
         </Canvas>
