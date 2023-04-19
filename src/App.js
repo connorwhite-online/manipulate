@@ -23,6 +23,7 @@ function App() {
     modelType: 'lite',
   };
 
+  // Create the detector
   const runHandPose = async () => {
     const detector = await handPoseDetection.createDetector(model, detectorConfig);
     console.log("handpose model loaded");
@@ -65,7 +66,7 @@ function App() {
 
   runHandPose();
 
-  
+  // useFrame hook to link Model rotation to the 3D keypoints of the hands detected  
 
   return (
     <div className='container'>
