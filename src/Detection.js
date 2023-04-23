@@ -4,10 +4,11 @@ import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 import Webcam from 'react-webcam';
 
 
-export default function Detection(props) {
+export default function Detection(landmarks) {
 
     const cameraRef = useRef(null);
 
+    // Configure the detector
     const model = handPoseDetection.SupportedModels.MediaPipeHands;
     const detectorConfig = {
         runtime: 'tfjs',
@@ -17,15 +18,16 @@ export default function Detection(props) {
 
     // Create the detector
     const runHandPose = async () => {
-        const detector = await handPoseDetection.createDetector(model, detectorConfig);
+        const net = await handPoseDetection.createDetector(model, detectorConfig);
         console.log("handpose model loaded");
 
         setInterval(() => {
-        detect(detector);
+        detect(net);
         }, 100);
     };
 
-    const detect = async (detector) => {
+    // Handpose detector function
+    const detect = async (net) => {
 
         if (
         typeof cameraRef.current !== 'undefined' &&
@@ -41,35 +43,28 @@ export default function Detection(props) {
         cameraRef.current.video.width = videoWidth;
         cameraRef.current.video.height = videoHeight;
 
-        // Set canvas width & height
-        // canvasRef.current.width = videoWidth;
-        // canvasRef.current.height = videoHeight;
-
         // Make Detections
         const estimationConfig = {flipHorizontal: true};
-        const hands = await detector.estimateHands(video, estimationConfig);
-        console.log(hands[0].keypoints3D[4]);
+        const hands = await net.estimateHands(video, estimationConfig);
+        // console.log(hands[0].keypoints3D[0], hands[0].score, hands[0].handedness);
 
-        // Draw Hand Mesh
-        // const ctx = canvasRef.current.getContext('2d');
-        // drawHand(hands, ctx);
+        // Get x, y, and z coordinates of landmarks
+        const landmarks = hands[0].keypoints3D[0]
+        console.log(landmarks)
         }
     };
+
+    
 
     runHandPose();
 
     return(
-        <div className="detection">
-            <Webcam 
-                ref={cameraRef}
-                width={300} 
-                style={{zIndex: 1, position: 'absolute'}}
-            />
-            {/* <canvas 
-                ref={canvasRef} 
-                width={300} 
-                style={{position: 'absolute', zIndex: 3}} 
-            /> */}
-        </div>
-    )
+        landmarks,
+        cameraRef,
+        <Webcam 
+            ref={cameraRef}
+            // width={300} 
+            style={{zIndex: 1, position: 'absolute'}}
+            mirrored={true}
+        />)
 }
