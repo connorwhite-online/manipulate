@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
-export function Model(props) {
+export function Model(landmarks) {
   const { nodes, materials } = useGLTF("/m1_metal.gltf");
+  const meshRef = useRef();
+
+
   return (
-    <group {...props} dispose={null}>
+    <group ref={meshRef} dispose={null}>
       <group scale={1}>
         <mesh
           castShadow

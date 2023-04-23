@@ -1,12 +1,9 @@
-import React, { useRef } from "react";
+// import React, { useRef } from "react";
 import '@tensorflow/tfjs-backend-webgl';
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
-import Webcam from 'react-webcam';
 
 
-export default function Detection(landmarks) {
-
-    const cameraRef = useRef(null);
+export default function Detection(cameraRef) {
 
     // Configure the detector
     const model = handPoseDetection.SupportedModels.MediaPipeHands;
@@ -58,13 +55,5 @@ export default function Detection(landmarks) {
 
     runHandPose();
 
-    return(
-        landmarks,
-        cameraRef,
-        <Webcam 
-            ref={cameraRef}
-            // width={300} 
-            style={{zIndex: 1, position: 'absolute'}}
-            mirrored={true}
-        />)
+    return(cameraRef)
 }
