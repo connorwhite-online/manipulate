@@ -1,9 +1,11 @@
-// import React, { useRef } from "react";
+import React, { useState } from "react";
 import '@tensorflow/tfjs-backend-webgl';
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 
 
-export default function Detection(cameraRef) {
+export default function useManipulation(cameraRef) {
+
+    const [landmarks, setLandmarks] = useState([0, 0, 0]);
 
     // Configure the detector
     const model = handPoseDetection.SupportedModels.MediaPipeHands;
@@ -11,16 +13,6 @@ export default function Detection(cameraRef) {
         runtime: 'tfjs',
         maxHands: 1,
         modelType: 'lite',
-    };
-
-    // Create the detector
-    const runHandPose = async () => {
-        const net = await handPoseDetection.createDetector(model, detectorConfig);
-        console.log("handpose model loaded");
-
-        setInterval(() => {
-        detect(net);
-        }, 100);
     };
 
     // Handpose detector function
@@ -43,17 +35,24 @@ export default function Detection(cameraRef) {
         // Make Detections
         const estimationConfig = {flipHorizontal: true};
         const hands = await net.estimateHands(video, estimationConfig);
-        // console.log(hands[0].keypoints3D[0], hands[0].score, hands[0].handedness);
 
         // Get x, y, and z coordinates of landmarks
-        const landmarks = hands[0].keypoints3D[0]
-        console.log(landmarks)
+        const landmarks = hands[0].keypoints3D[0];
+        setLandmarks(landmarks)
         }
     };
 
-    
+    // Create the detector
+    const runHandPose = async () => {
+        const net = await handPoseDetection.createDetector(model, detectorConfig);
+        console.log("handpose model loaded");
+
+        setInterval(() => {
+        detect(net);
+        }, 100);
+    };
 
     runHandPose();
 
-    return(cameraRef)
+    return { landmarks };
 }
