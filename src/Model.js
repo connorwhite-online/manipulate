@@ -1,18 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
+import { dampE } from "maath/easing";
 
 export function Model(props) {
   const { nodes, materials } = useGLTF("/caribiner.glb");
   const mesh = useRef();
-  // const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+  const { clock } = useThree();
 
   useFrame(() => {
     if (props.landmarks) {
       const { x, y, z } = props.landmarks;
-      mesh.current.rotation.x = x * 20;
-      mesh.current.rotation.y = y * 100;
-      mesh.current.rotation.z = z * 20;
+      dampE(mesh.current.rotation, [x, y, z], 0.25, clock.getDelta())
     }
   });
 
