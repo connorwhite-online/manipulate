@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { Model } from './Model';
-import { OrbitControls } from '@react-three/drei';
 import Webcam from 'react-webcam';
 import './scene.css';
 import useManipulation from './useManipulation';
@@ -25,13 +24,12 @@ export default function Scene() {
                     <pointLight position={[3, 6, 1]} intensity={.5} color={'#FF7474'}/>
                     <pointLight position={[-5, -5, 1]} intensity={.5} color={'#82CAFF'}/>
                     <Model ref={modelRef} landmarks={landmarks}/>
-                    {/* <OrbitControls /> */}
                 </Canvas>
             </div>
             <div className='camera'>
                 <Webcam 
                     ref={cameraRef}
-                    // width={300} 
+                    // width={100} 
                     style={{zIndex: 1, position: 'absolute'}}
                     mirrored={true}
                 />
