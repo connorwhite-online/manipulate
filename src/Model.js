@@ -6,12 +6,11 @@ import { dampE } from "maath/easing";
 export function Model(props) {
   const { nodes, materials } = useGLTF("/caribiner.glb");
   const mesh = useRef();
-  const { clock } = useThree();
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (props.landmarks) {
       const { x, y, z } = props.landmarks;
-      dampE(mesh.current.rotation, [x, y, z], 0.25, clock.getDelta())
+      dampE(mesh.current.rotation, [x * 25, y * 100, z * 25], 0.5, delta)
     }
   });
 
