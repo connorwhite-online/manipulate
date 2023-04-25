@@ -27,13 +27,11 @@ export default function Scene() {
                     <Model ref={modelRef} landmarks={landmarks}/>
                 </Canvas>
             </div>
-            <div className='camera'>
-                <Webcam 
-                    ref={cameraRef}
-                    className='camera'
-                    mirrored={true}
-                />
-            </div>
+            <Webcam 
+                ref={cameraRef}
+                className='camera'
+                mirrored={true}
+            />
         </div>
     )
 }
