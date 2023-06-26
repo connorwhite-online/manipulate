@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { dampE } from "maath/easing";
@@ -6,6 +6,13 @@ import { dampE } from "maath/easing";
 export function Model(props) {
   const { nodes, materials } = useGLTF("/caribiner.glb");
   const mesh = useRef();
+
+  // Set initial rotation for the mesh
+  // useEffect(() => {
+  //   if (props.landmarks) {
+  //     mesh.current.rotation.set(0, 0, 0);
+  //   }
+  // }, [props.landmarks]);
 
   // Rotating the model based on 3D landmarks using a smoothing function
   useFrame((state, delta) => {
@@ -16,16 +23,13 @@ export function Model(props) {
   });
 
   return (
-    <group {...props} dispose={null} scale={0.075}>
+    <group {...props} dispose={null} >
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Caribiner.geometry}
         material={materials["Stainless Steel 17-4 PH"]}
         ref={mesh}
-        // rotateX={0}
-        // rotateY={0}
-        // rotateZ={0}
       />
     </group>
   );
