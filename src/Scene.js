@@ -4,7 +4,6 @@ import { Model } from './Model';
 import Webcam from 'react-webcam';
 import './scene.css';
 import useManipulation from './useManipulation';
-import { Perf } from 'r3f-perf';
 
 export default function Scene() {
 
@@ -18,7 +17,6 @@ export default function Scene() {
         <div className='container'>
             <div className='webgl'>
                 <Canvas style={{zIndex: 10}} >
-                    <Perf />
                     <ambientLight />
                     <pointLight position={[1, 0, -3]} intensity={1} color={'white'}/>
                     <pointLight position={[-1, 0, 3]} intensity={1} color={'white'}/>
