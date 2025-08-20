@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface IconProps {
   name: string;
@@ -31,9 +32,11 @@ export default function Icon({ name, size = 24, color = 'currentColor', classNam
       onClick={onClick}
       style={{ ...iconStyle, color }}
     >
-      <img
+      <Image
         src={`/icons/${name}.svg`}
         alt={name}
+        width={typeof size === 'number' ? size : 24}
+        height={typeof size === 'number' ? size : 24}
         style={{
           width: '100%',
           height: '100%',

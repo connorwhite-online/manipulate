@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import '@tensorflow/tfjs-backend-webgl'
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection'
 import { Vector3, Matrix4, Euler, Quaternion } from 'three'
@@ -10,11 +10,11 @@ export default function useManipulation(cameraRef) {
   const [handDetected, setHandDetected] = useState(false)
 
   const model = handPoseDetection.SupportedModels.MediaPipeHands
-  const detectorConfig = {
+  const detectorConfig = useMemo(() => ({
     runtime: 'tfjs',
     maxHands: 1,
     modelType: 'lite',
-  }
+  }), [])
 
   const detectorRef = useRef(null)
   const eulerRef = useRef(new Euler())
@@ -29,7 +29,7 @@ export default function useManipulation(cameraRef) {
       detectorRef.current = detector
     }
     runHandPose()
-  }, [])
+  }, [model, detectorConfig])
 
   const computeEulerFromHand = (keypoints3D, handedness) => {
     const getPoint = (i) => {
@@ -120,7 +120,7 @@ export default function useManipulation(cameraRef) {
     return progress >= 1
   }
 
-  const detect = async () => {
+  const detect = useCallback(async () => {
     if (!detectorRef.current) return
     if (
       typeof cameraRef.current === 'undefined' ||
@@ -183,14 +183,14 @@ export default function useManipulation(cameraRef) {
       const rot = computeEulerFromHand(keypoints3D, handedness)
       if (rot) setRotation(rot)
     }
-  }
+  }, [cameraRef, lerpToInitialPosition, handDetected])
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       detect()
     }, 100)
     return () => clearInterval(intervalId)
-  }, [])
+  }, [detect])
 
   return { rotation, handDetected }
 } 

@@ -11,7 +11,7 @@ export default function HandDetectionOverlay({ visible }) {
           <Icon name="hand" size={32} className="hand-detection-icon" />
         </div>
         <p className="hand-detection-text">
-          Position your hand within the camera's view with your palm facing forward.
+          Position your hand within the camera&apos;s view with your palm facing forward.
         </p>
       </div>
     </div>
