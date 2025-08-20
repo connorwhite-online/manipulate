@@ -7,6 +7,7 @@ import { Vector3, Matrix4, Euler, Quaternion } from 'three'
 
 export default function useManipulation(cameraRef) {
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 })
+  const [handDetected, setHandDetected] = useState(false)
 
   const model = handPoseDetection.SupportedModels.MediaPipeHands
   const detectorConfig = {
@@ -19,6 +20,8 @@ export default function useManipulation(cameraRef) {
   const eulerRef = useRef(new Euler())
   const calibrationQuatRef = useRef(null)
   const currentHandednessRef = useRef(null)
+  const lerpStartTimeRef = useRef(null)
+  const lerpStartRotationRef = useRef({ x: 0, y: 0, z: 0 })
 
   useEffect(() => {
     const runHandPose = async () => {
@@ -90,6 +93,33 @@ export default function useManipulation(cameraRef) {
     return { x: e.x, y: e.y, z: e.z }
   }
 
+  const lerpToInitialPosition = () => {
+    const currentTime = performance.now()
+    
+    if (!lerpStartTimeRef.current) {
+      lerpStartTimeRef.current = currentTime
+      lerpStartRotationRef.current = { ...rotation }
+    }
+    
+    const lerpDuration = 2000 // 2 seconds to lerp back to initial position
+    const elapsed = currentTime - lerpStartTimeRef.current
+    const progress = Math.min(elapsed / lerpDuration, 1)
+    
+    // Smooth easing function (ease out)
+    const easedProgress = 1 - Math.pow(1 - progress, 3)
+    
+    const lerpedRotation = {
+      x: lerpStartRotationRef.current.x * (1 - easedProgress),
+      y: lerpStartRotationRef.current.y * (1 - easedProgress),
+      z: lerpStartRotationRef.current.z * (1 - easedProgress)
+    }
+    
+    setRotation(lerpedRotation)
+    
+    // Return true if lerp is complete
+    return progress >= 1
+  }
+
   const detect = async () => {
     if (!detectorRef.current) return
     if (
@@ -101,6 +131,7 @@ export default function useManipulation(cameraRef) {
       // If camera not ready, clear calibration to re-baseline later
       calibrationQuatRef.current = null
       currentHandednessRef.current = null
+      setHandDetected(false)
       return
     }
 
@@ -116,10 +147,27 @@ export default function useManipulation(cameraRef) {
 
     const hand = hands?.[0]
     if (!hand) {
-      // No hand detected; clear calibration to re-baseline on next detection
-      calibrationQuatRef.current = null
-      currentHandednessRef.current = null
+      // No hand detected; start lerping back to initial position
+      if (handDetected) {
+        setHandDetected(false)
+        lerpStartTimeRef.current = null // Reset lerp timing
+      }
+      
+      // Continue lerping back to initial position
+      const lerpComplete = lerpToInitialPosition()
+      
+      // Only clear calibration when lerp is complete
+      if (lerpComplete) {
+        calibrationQuatRef.current = null
+        currentHandednessRef.current = null
+      }
       return
+    }
+
+    // Hand detected
+    if (!handDetected) {
+      setHandDetected(true)
+      lerpStartTimeRef.current = null // Reset lerp timing when hand reappears
     }
 
     const handedness = hand.handedness || hand.handednesses?.[0]?.label || null
@@ -144,5 +192,5 @@ export default function useManipulation(cameraRef) {
     return () => clearInterval(intervalId)
   }, [])
 
-  return { rotation }
+  return { rotation, handDetected }
 } 

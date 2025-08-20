@@ -1,3 +1,24 @@
+@font-face {
+  font-family: 'Marfa-Black';
+  src: url('/fonts/ABCMarfa-Black-Trial.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Marfa-Medium';
+  src: url('/fonts/ABCMarfa-Medium-Trial.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Marfa-Regular';
+  src: url('/fonts/ABCMarfa-Regular-Trial.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -21,16 +42,162 @@ html, body {
   padding: 0;
 }
 
-.camera {
-  width: 250px;
-  height: auto;
-  object-fit: cover;
-  z-index: 1;
+.camera-container {
   position: absolute;
   left: 5px;
   top: 5px;
   margin: 10px;
+  z-index: 20;
+}
+
+.camera-expanded-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.camera-collapsed-view {
+  width: 120px;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: solid 1px white;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.camera-collapsed-view:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.camera {
+  width: 250px;
+  height: auto;
+  object-fit: cover;
   padding: 10px;
   border: solid 1px white;
   border-radius: 25px;
+}
+
+.camera-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 25px;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.camera-collapsed-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-family: 'Marfa-Medium', sans-serif;
+  font-size: 14px;
+}
+
+.camera-label {
+  color: white;
+}
+
+.camera-icon {
+  color: white;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.model-context {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  /* background-color: rgba(255, 255, 255, 0.1); */
+  /* color: white; */
+  /* padding: 20px; */
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  max-width: 300px;
+  z-index: 100;
+}
+
+.model-name {
+  font-family: 'Marfa-Black', sans-serif;
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: white;
+  line-height: 1.2;
+}
+
+.model-material {
+  font-family: 'Marfa-Medium', sans-serif;
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #cccccc;
+  line-height: 1.3;
+}
+
+.hand-detection-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 275px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  z-index: 150;
+  transition: opacity 0.3s ease-out;
+  pointer-events: none;
+  padding: 30px;
+}
+
+.hand-detection-overlay.visible {
+  opacity: 1;
+}
+
+.hand-detection-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hand-detection-content {
+  text-align: center;
+  color: white;
+}
+
+.hand-icon-container {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.hand-detection-icon {
+  width: 60px;
+  height: 60px;
+  color: white;
+  opacity: 0.9;
+}
+
+.hand-detection-text {
+  font-family: 'Marfa-Regular', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  color: #e0e0e0;
 } 
