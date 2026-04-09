@@ -1,0 +1,51 @@
+{
+  "name": "@manipulate/hand",
+  "version": "0.1.0",
+  "description": "Hand-gesture-driven 3D manipulation for React Three Fiber",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "three": ">=0.150.0",
+    "@react-three/fiber": ">=9.0.0"
+  },
+  "dependencies": {
+    "@tensorflow-models/hand-pose-detection": "^2.0.1",
+    "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "@tensorflow/tfjs-converter": "^4.22.0",
+    "@tensorflow/tfjs-core": "^4.22.0",
+    "maath": "^0.10.8",
+    "react-webcam": "^7.2.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0",
+    "react": "^19.1.1",
+    "three": "^0.179.1",
+    "@react-three/fiber": "^9.3.0",
+    "@types/react": "^19.1.0",
+    "@types/three": "^0.179.0"
+  },
+  "license": "MIT"
+}
