@@ -14,9 +14,6 @@ export default function Scene() {
   const cameraRef = useRef(null)
   const { rotation, handDetected } = useManipulation(cameraRef)
 
-  // Align perceived axes: keep Y as-is, flip X and Z to match expected control direction
-  const adjustedRotation = { x: -rotation.x, y: rotation.y, z: -rotation.z }
-
   return (
     <div className='container'>
 
@@ -24,7 +21,7 @@ export default function Scene() {
         <Canvas shadows style={{ width: '100vw', height: '100vh', zIndex: 10 }} gl={{ toneMappingExposure: 1.15 }}>
           <ambientLight intensity={0.05} />
           <Suspense fallback={null}>
-            <Model ref={modelRef} rotationEuler={adjustedRotation} />
+            <Model ref={modelRef} rotationEuler={rotation} />
           </Suspense>
           <Environment resolution={512}>
             <Lightformer form="rect" intensity={4} position={[0, 5, 2]} rotation={[-Math.PI / 2.5, 0, 0]} scale={[8, 6, 1]} />
